@@ -1,20 +1,10 @@
 var express = require("express");
+const Message = require("../models/message");
 var router = express.Router();
 
-const messages = [
-  {
-    text: "Hi there!",
-    user: "Amando",
-    added: new Date(),
-  },
-  {
-    text: "Hello World!",
-    user: "Charles",
-    added: new Date(),
-  },
-];
+router.get("/", async function (req, res, next) {
+  const messages = await Message.find();
 
-router.get("/", function (req, res, next) {
   res.render("index", { messages });
 });
 
@@ -23,9 +13,9 @@ router
   .get(function (req, res, next) {
     res.render("form");
   })
-  .post(function (req, res, next) {
+  .post(async function (req, res, next) {
     const { username, text } = req.body;
-    messages.push({ user: username, text, added: new Date().toUTCString() });
+    await Message.create({ name: username, text });
 
     res.status(200).redirect("/");
   });
